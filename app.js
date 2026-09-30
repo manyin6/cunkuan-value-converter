@@ -125,13 +125,18 @@ const ART = {
 
   aapl: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#f2f2f2"/><path fill="#111" d="M41.2 18.2c-.9 1.1-2.4 1.9-3.8 1.8.1-1.2.6-2.5 1.5-3.4 1-1 2.5-1.7 3.8-1.8-.1 1.3-.6 2.5-1.5 3.4z"/><path fill="#111" d="M44.2 28.5c-1.4-.8-2.3-2.1-2.3-3.7 0-2.2 1.7-3.6 1.8-3.7-1.1-1.6-2.9-1.8-3.5-1.8-1.5-.2-2.9.9-3.7.9-.8 0-2-.9-3.3-.8-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.3 2.5 1.3-.1 1.8-.8 3.4-.8s2 .8 3.4.8c1.4 0 2.3-1.2 3.2-2.4.9-1.4 1.3-2.8 1.3-2.9-.1 0-2.5-1-2.5-3.7 0-2.3 1.9-3.4 2-3.5z"/></svg>`,
 
+  tsla: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#111"/><text x="32" y="38" text-anchor="middle" fill="#fff" font-size="14" font-family="system-ui,sans-serif" font-weight="700">T</text></svg>`,
+
   fridge: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="6" width="36" height="52" rx="4" fill="#E8ECF0" stroke="#B0B8C1" stroke-width="1.5"/><path d="M14 28h36" stroke="#B0B8C1" stroke-width="1.5"/><rect x="42" y="14" width="2.5" height="8" rx="1" fill="#8A939C"/><rect x="42" y="38" width="2.5" height="10" rx="1" fill="#8A939C"/></svg>`,
 
   washer: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="6" width="40" height="52" rx="4" fill="#E8ECF0" stroke="#B0B8C1" stroke-width="1.5"/><circle cx="20" cy="13" r="2.2" fill="#6B7280"/><circle cx="32" cy="38" r="14" fill="#CBD5E1" stroke="#94A3B8" stroke-width="1.5"/><circle cx="32" cy="38" r="10" fill="#BAE6FD"/></svg>`,
 
   ac: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="14" width="52" height="22" rx="4" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.5"/><rect x="10" y="18" width="44" height="10" rx="2" fill="#E2E8F0"/><path d="M18 40c0 4 2 8 6 10M32 40v12M46 40c0 4-2 8-6 10" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round"/></svg>`,
 
-  // maybach/ferrari use assets/*.png via item.img
+  luckin: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="26" fill="#1a1a1a"/><circle cx="32" cy="32" r="18" fill="#fff"/><circle cx="32" cy="32" r="10" fill="#c41e3a"/><text x="32" y="36" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui,sans-serif" font-weight="700">咖</text></svg>`,
+  maybach: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="40" rx="24" ry="10" fill="#2a2a2a"/><path d="M10 40c2-14 12-22 22-22s20 8 22 22" fill="#3a3a3a"/><circle cx="18" cy="42" r="6" fill="#111"/><circle cx="46" cy="42" r="6" fill="#111"/><rect x="24" y="26" width="16" height="6" rx="2" fill="#c0c0c0"/></svg>`,
+  ferrari: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="42" rx="26" ry="10" fill="#8B0000"/><path d="M8 40c3-16 14-26 24-26s21 10 24 26" fill="#DC143C"/><circle cx="16" cy="44" r="7" fill="#111"/><circle cx="48" cy="44" r="7" fill="#111"/><path d="M28 22h8l2 8h-12z" fill="#FFD700"/></svg>`,
+  // brand pngs (live) override via item.img; OSS may omit img and use these SVGs
 
   moutai: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="8" width="20" height="8" rx="2" fill="#8B1A1A"/><rect x="24" y="16" width="16" height="6" fill="#C4A35A"/><path d="M20 22h24l-2 34c0 2-2 4-10 4s-10-2-10-4l-2-34z" fill="#E8D5A3"/><rect x="24" y="28" width="16" height="18" rx="1" fill="#9B1B1B"/><text x="32" y="40" text-anchor="middle" fill="#F5E6B8" font-size="6" font-family="Noto Sans SC,sans-serif" font-weight="600">飞天</text><ellipse cx="32" cy="58" rx="10" ry="2.5" fill="#C4A35A"/></svg>`,
 
@@ -158,16 +163,16 @@ const ITEMS = [
   { id: "moutai", name: "飞天茅台", unit: "瓶", decimals: 2, art: "moutai", getPrice: () => BASELINE.moutai, retail: true, tag: "500ml" },
   { id: "iphone", name: "iPhone", unit: "台", decimals: 2, art: "iphone", getPrice: () => BASELINE.iphone, retail: true, tag: "18 Pro Max" },
   { id: "macbook", name: "MacBook Air", unit: "台", decimals: 2, art: "macbook", getPrice: () => BASELINE.macbook, retail: true, tag: "13\" M5" },
-  { id: "luckin", name: "瑞幸拿铁", unit: "杯", decimals: 0, art: "luckin", img: "assets/luckin.png", getPrice: () => BASELINE.luckin, retail: true },
+  { id: "luckin", name: "瑞幸拿铁", unit: "杯", decimals: 0, art: "luckin", getPrice: () => BASELINE.luckin, retail: true },
   { id: "gas", name: "汽油92#", unit: "升", decimals: 1, art: "gas", getPrice: () => BASELINE.gas92, retail: true, tag: "北京" },
   { id: "beijing", name: "北京房价", unit: "㎡", decimals: 3, art: "beijing", getPrice: () => BASELINE.beijing_m2, retail: true, tag: "二手均价" },
-  { id: "tsla", name: "特斯拉", unit: "股", decimals: 4, art: "tsla", img: "assets/tesla.png?v=whitebg", getPrice: () => prices.TSLA_CNY, liveKey: "tsla", tag: "TSLA" },
+  { id: "tsla", name: "特斯拉", unit: "股", decimals: 4, art: "tsla", getPrice: () => prices.TSLA_CNY, liveKey: "tsla", tag: "TSLA" },
   { id: "aapl", name: "苹果", unit: "股", decimals: 4, art: "aapl", getPrice: () => prices.AAPL_CNY, liveKey: "aapl", tag: "AAPL" },
   { id: "fridge", name: "冰箱", unit: "台", decimals: 2, art: "fridge", getPrice: () => BASELINE.fridge, retail: true },
   { id: "washer", name: "洗衣机", unit: "台", decimals: 2, art: "washer", getPrice: () => BASELINE.washer, retail: true },
   { id: "ac", name: "空调", unit: "台", decimals: 2, art: "ac", getPrice: () => BASELINE.ac, retail: true },
-  { id: "maybach", name: "迈巴赫", unit: "辆", decimals: 4, art: "maybach", img: "assets/maybach.png", getPrice: () => BASELINE.maybach, retail: true, tag: "S480" },
-  { id: "ferrari", name: "法拉利", unit: "辆", decimals: 4, art: "ferrari", img: "assets/ferrari.png", getPrice: () => BASELINE.ferrari, retail: true, tag: "Roma" },
+  { id: "maybach", name: "迈巴赫", unit: "辆", decimals: 4, art: "maybach", getPrice: () => BASELINE.maybach, retail: true, tag: "S480" },
+  { id: "ferrari", name: "法拉利", unit: "辆", decimals: 4, art: "ferrari", getPrice: () => BASELINE.ferrari, retail: true, tag: "Roma" },
 ];
 
 function parseAmount(raw) {
@@ -210,8 +215,14 @@ function formatCNYDisplay(n) {
   return "￥" + Math.round(n).toLocaleString("zh-CN");
 }
 
+function retailAsOfLabel() {
+  // BASELINE.asOf → 「2026-09」
+  const raw = (BASELINE.asOf || "").slice(0, 7);
+  return raw || "参考";
+}
+
 function statusTag(item) {
-  if (item.retail) return "参考零售价";
+  if (item.retail) return "参考价 · " + retailAsOfLabel();
   if (item.liveKey) return prices.live[item.liveKey] ? "实时" : "参考价";
   return "";
 }
@@ -313,9 +324,13 @@ function updateStatusUI() {
   const hint = document.getElementById("resultsHint");
   const keys = ["btc", "gold", "tsla", "aapl"];
   const liveCount = keys.filter((k) => prices.live[k]).length;
-  const line = "BTC / 黄金 / TSLA / AAPL 为实时行情；其余为参考零售价。";
+  const asOf = retailAsOfLabel();
+  let line = "BTC / 黄金 / TSLA / AAPL 为实时行情；其余为参考零售价（" + asOf + "）。";
+  if (prices.fetchedAt) {
+    line += " 行情更新：" + prices.fetchedAt;
+  }
 
-  el.classList.remove("live", "partial");
+  el.classList.remove("live", "partial", "stale");
   if (liveCount === keys.length) {
     el.classList.add("live");
     text.textContent = "实时行情";
@@ -325,7 +340,6 @@ function updateStatusUI() {
   } else {
     text.textContent = "参考价";
   }
-  // Single slim footer line only
   hint.textContent = line;
 }
 
@@ -360,10 +374,16 @@ async function fetchLivePrices(_force) {
       prices.live.aapl = true;
     }
     prices.sources = data.sources || {};
-    prices.fetchedAt = data.fetched_at || null;
+    if (data.fetched_at) prices.fetchedAt = data.fetched_at;
+    if (data.ok === false) {
+      const last = prices.fetchedAt ? "（上次成功：" + prices.fetchedAt + "）" : "";
+      showToast("行情获取失败，仍用参考价" + last);
+    }
     return data;
   } catch (err) {
     console.warn("live prices failed", err);
+    const last = prices.fetchedAt ? "（上次成功：" + prices.fetchedAt + "）" : "";
+    showToast("行情获取失败，仍用参考价" + last);
     return null;
   }
 }
@@ -424,6 +444,29 @@ function buildTextSummary(amount) {
     "For entertainment only. Not advice. Do not use illegally. Free OSS — no paid resale.",
   ];
   return lines.join("\n");
+}
+
+async function sharePage() {
+  const amount = currentAmount();
+  const text = SHARE_SLOGAN + (Number.isFinite(amount) ? "\n金额：" + formatCNYDisplay(amount) : "");
+  try {
+    await navigator.share({
+      title: "存款价值转换",
+      text,
+      url: SHARE_URL,
+    });
+    track("share");
+    showToast("已分享");
+  } catch (err) {
+    if (err && err.name === "AbortError") return;
+    // fallback: copy link
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      showToast("已复制链接");
+    } catch {
+      showToast("分享不可用");
+    }
+  }
 }
 
 async function copyResults() {
@@ -545,16 +588,26 @@ function init() {
   input.addEventListener("focus", () => input.select());
   document.getElementById("btnCopy").addEventListener("click", copyResults);
   document.getElementById("btnSave").addEventListener("click", saveImage);
+  const btnShare = document.getElementById("btnShare");
+  if (btnShare && typeof navigator.share === "function") {
+    btnShare.hidden = false;
+    btnShare.addEventListener("click", sharePage);
+  }
   document.getElementById("btnRefresh").addEventListener("click", async () => {
     const t = document.getElementById("btnRefresh");
     t.disabled = true;
     t.textContent = "刷新中…";
-    await fetchLivePrices(true);
+    // fetchLivePrices already toasts on hard failure
+    const data = await fetchLivePrices(true);
     refreshUI();
     t.disabled = false;
     t.textContent = "刷新行情";
-    const any = Object.values(prices.live).some(Boolean);
-    showToast(any ? "行情已更新" : "仍使用参考价");
+    if (data) {
+      const any = Object.values(prices.live).some(Boolean);
+      if (data.ok !== false) {
+        showToast(any ? (prices.fetchedAt ? "行情已更新 · " + prices.fetchedAt : "行情已更新") : "仍使用参考价");
+      }
+    }
   });
 
   refreshUI();

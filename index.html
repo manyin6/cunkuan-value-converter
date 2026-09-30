@@ -3,13 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="存款价值转换 — 看看这笔存款能换成什么" />
+  <meta name="description" content="存款价值转换 — 看看这笔存款能换成什么。输入金额，换算成 BTC、黄金、生活物资与股票等参考价值。" />
   <title>存款价值转换</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=disclaimer2" />
+  <link rel="canonical" href="https://example.com/" />
+  <!-- Open Graph / WeChat-friendly share preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="存款价值转换" />
+  <meta property="og:title" content="存款价值转换" />
+  <meta property="og:description" content="看看这笔存款能换成什么 — BTC、黄金、生活物资与股票参考换算" />
+  <meta property="og:url" content="https://example.com/" />
+  <meta property="og:image" content="https://example.com/assets/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="zh_CN" />
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="存款价值转换" />
+  <meta name="twitter:description" content="看看这笔存款能换成什么 — BTC、黄金、生活物资与股票参考换算" />
+  <meta name="twitter:image" content="https://example.com/assets/og.png" />
+  <link rel="stylesheet" href="styles.css?v=improve1" />
 </head>
 <body>
   <header class="site-header">
@@ -48,6 +61,7 @@
     <section class="toolbar">
       <h2>可换成</h2>
       <div class="toolbar-actions">
+        <button type="button" class="btn" id="btnShare" hidden>分享</button>
         <button type="button" class="btn" id="btnCopy">复制结果</button>
         <button type="button" class="btn btn-primary" id="btnSave">保存图片</button>
       </div>
@@ -106,6 +120,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-  <script src="app.js?v=disclaimer2"></script>
+  <script src="app.js?v=improve1"></script>
 </body>
 </html>

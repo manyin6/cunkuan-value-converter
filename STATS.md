@@ -1,6 +1,6 @@
 # 统计口径说明（STATS）
 
-时区一律 **Asia/Shanghai**。数据文件：`data/stats.json`（计数）、`data/visitors.json`（访客哈希列表）。这些文件由服务首次运行时自动创建，**不要提交进 Git**。
+时区一律 **Asia/Shanghai**。数据文件：`data/stats.json`（计数）、`data/visitors.json`（访客哈希列表）。
 
 | 指标 | 含义 | 如何计入 |
 |------|------|----------|
@@ -19,7 +19,9 @@
 
 ## 管理入口
 
-- 页面：`/admin?key=ADMIN_KEY`（默认本地预览值为 `deposit2026`，**生产务必用环境变量覆盖**）
-- JSON：`/api/stats?key=...`
+- 页面：`/admin` → 密码表单 POST 到 `/api/admin/login`，设置 HttpOnly Cookie `admin_session`（约 12h）
+- JSON：`/api/stats`（需 Cookie 或 `Authorization: Bearer <ADMIN_KEY>` / `X-Admin-Key`）
+- 默认本地预览密钥：`deposit2026`（**生产务必用环境变量 `ADMIN_KEY` 覆盖**）
+- 旧 `?key=` 查询参数已废弃：访问会重定向到登录页，密钥不再出现在 URL / 访问日志
 
-**不要**把真实 `stats.json` / `visitors.json` 提交到公开仓库；生产环境清空统计前请先备份。
+**不要**随意清空生产环境 `stats.json` / `visitors.json`。

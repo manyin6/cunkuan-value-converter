@@ -13,12 +13,16 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from zoneinfo import ZoneInfo
 import hashlib
+import hmac
+import secrets
 import re as _re
 
 ROOT = Path(__file__).resolve().parent
 PORT = 8765
-SHARE_DEFAULT = "https://example.com/deposit-value"
+SHARE_DEFAULT = "https://example.com/"
 ADMIN_KEY = __import__("os").environ.get("ADMIN_KEY", "deposit2026")
+SESSION_COOKIE = "admin_session"
+SESSION_TTL_SEC = 12 * 3600  # 12h
 STATS_PATH = ROOT / "data" / "stats.json"
 VISITORS_PATH = ROOT / "data" / "visitors.json"
 STATS_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -591,7 +595,124 @@ def stats_summary() -> dict:
     }
 
 
-def render_admin_html(key: str) -> bytes:
+
+def _session_token(exp: int | None = None) -> str:
+    """HMAC-signed admin session: exp.hexsig (bound to ADMIN_KEY)."""
+    if exp is None:
+        exp = int(time.time()) + SESSION_TTL_SEC
+    msg = f"admin:{exp}".encode("utf-8")
+    sig = hmac.new(ADMIN_KEY.encode("utf-8"), msg, hashlib.sha256).hexdigest()
+    return f"{exp}.{sig}"
+
+
+def _verify_session_token(token: str | None) -> bool:
+    if not token or "." not in token:
+        return False
+    try:
+        exp_s, sig = token.split(".", 1)
+        exp = int(exp_s)
+        if exp < int(time.time()):
+            return False
+        expected = hmac.new(
+            ADMIN_KEY.encode("utf-8"),
+            f"admin:{exp}".encode("utf-8"),
+            hashlib.sha256,
+        ).hexdigest()
+        return hmac.compare_digest(sig, expected)
+    except Exception:
+        return False
+
+
+def _parse_cookies(header: str | None) -> dict[str, str]:
+    out: dict[str, str] = {}
+    if not header:
+        return out
+    for part in header.split(";"):
+        part = part.strip()
+        if not part or "=" not in part:
+            continue
+        k, v = part.split("=", 1)
+        out[k.strip()] = v.strip()
+    return out
+
+
+def _request_is_https(handler: "Handler") -> bool:
+    proto = (handler.headers.get("X-Forwarded-Proto") or "").split(",")[0].strip().lower()
+    if proto == "https":
+        return True
+    if proto == "http":
+        return False
+    return False
+
+
+def _is_admin_request(handler: "Handler") -> bool:
+    """True if valid admin_session cookie OR Authorization / X-Admin-Key."""
+    cookies = _parse_cookies(handler.headers.get("Cookie"))
+    if _verify_session_token(cookies.get(SESSION_COOKIE)):
+        return True
+    auth = (handler.headers.get("Authorization") or "").strip()
+    if auth.lower().startswith("bearer "):
+        token = auth[7:].strip()
+        if hmac.compare_digest(token, ADMIN_KEY) or _verify_session_token(token):
+            return True
+    xkey = (handler.headers.get("X-Admin-Key") or "").strip()
+    if xkey and hmac.compare_digest(xkey, ADMIN_KEY):
+        return True
+    return False
+
+
+def _set_admin_cookie_header(handler: "Handler", token: str) -> str:
+    parts = [
+        f"{SESSION_COOKIE}={token}",
+        "Path=/",
+        f"Max-Age={SESSION_TTL_SEC}",
+        "HttpOnly",
+        "SameSite=Lax",
+    ]
+    if _request_is_https(handler):
+        parts.append("Secure")
+    return "; ".join(parts)
+
+
+def render_admin_login_html(error: str | None = None) -> bytes:
+    err = f'<p class="err">{error}</p>' if error else ""
+    html = f"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>管理员登录 · 存款价值转换</title>
+<style>
+  body{{font-family:system-ui,sans-serif;background:#f7f6f3;color:#111;margin:0;padding:24px}}
+  .wrap{{max-width:380px;margin:10vh auto;background:#fff;border:1px solid #e6e4df;border-radius:12px;padding:24px}}
+  h1{{font-size:1.1rem;margin:0 0 .5rem}}
+  .sub{{color:#666;font-size:.82rem;margin-bottom:1.25rem;line-height:1.5}}
+  label{{display:block;font-size:.8rem;color:#555;margin-bottom:.35rem}}
+  input[type=password]{{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #d4d1ca;border-radius:8px;font-size:1rem}}
+  button{{margin-top:14px;width:100%;padding:10px 14px;border:0;border-radius:8px;background:#111;color:#fff;font-size:.95rem;cursor:pointer}}
+  .err{{color:#b91c1c;font-size:.85rem;margin:0 0 .75rem}}
+  .hint{{margin-top:1rem;font-size:.75rem;color:#888;line-height:1.5}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>管理员登录</h1>
+  <p class="sub">请输入 ADMIN_KEY。密钥通过 POST 提交，不再使用 URL 查询参数（避免写入访问日志）。</p>
+  {err}
+  <form method="POST" action="/api/admin/login" autocomplete="current-password">
+    <label for="key">管理员密钥</label>
+    <input id="key" name="key" type="password" required autofocus />
+    <button type="submit">登录</button>
+  </form>
+  <p class="hint">登录成功后写入 HttpOnly Cookie（约 12 小时）。也可用请求头 <code>Authorization: Bearer &lt;ADMIN_KEY&gt;</code> 或 <code>X-Admin-Key</code> 访问 <code>/api/stats</code>。</p>
+</div>
+</body>
+</html>"""
+    return html.encode("utf-8")
+
+
+def render_admin_html() -> bytes:
     s = stats_summary()
     rows = "".join(
         f"<tr><td>{d['date']}</td><td>{d['view']}</td><td>{d['unique_views']}</td>"
@@ -674,8 +795,8 @@ class Handler(SimpleHTTPRequestHandler):
                     "Content-Security-Policy",
                     "default-src 'self'; "
                     "script-src 'self' https://cdn.jsdelivr.net; "
-                    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
-                    "font-src 'self' https://fonts.gstatic.com data:; "
+                    "style-src 'self' 'unsafe-inline'; "
+                    "font-src 'self'; "
                     "img-src 'self' data: blob:; "
                     "connect-src 'self'; "
                     "frame-ancestors 'none'",
@@ -733,7 +854,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802
         parsed = urllib.parse.urlparse(self.path)
         # Deny sensitive paths that SimpleHTTPRequestHandler would otherwise serve from ROOT.
-        # Deny common sensitive paths if a misconfigured reverse proxy serves this tree
+        # (Confirmed public on production: /.admin_key, /data/*, /server.py)
         req_path = urllib.parse.unquote(parsed.path or "/")
         norm = req_path.replace("\\", "/")
         while "//" in norm:
@@ -759,16 +880,24 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if parsed.path in ("/admin", "/stats"):
             qs = urllib.parse.parse_qs(parsed.query)
-            key = (qs.get("key") or [""])[0]
-            if key != ADMIN_KEY:
-                body = b"Unauthorized. Use /admin?key=YOUR_ADMIN_KEY"
+            # Legacy ?key=… — never echo key; strip query and show login (or dashboard if cookie ok)
+            if "key" in qs:
+                self.send_response(302)
+                self.send_header("Location", "/admin")
+                self.send_header("Cache-Control", "no-store")
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+                return
+            if not _is_admin_request(self):
+                body = render_admin_login_html()
                 self.send_response(401)
-                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Cache-Control", "no-store")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
                 self.wfile.write(body)
                 return
-            body = render_admin_html(key)
+            body = render_admin_html()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Cache-Control", "no-store")
@@ -777,9 +906,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return
         if parsed.path == "/api/stats":
-            qs = urllib.parse.parse_qs(parsed.query)
-            key = (qs.get("key") or [""])[0]
-            if key != ADMIN_KEY:
+            if not _is_admin_request(self):
                 body = json.dumps({"ok": False, "error": "unauthorized"}).encode()
                 self.send_response(401)
             else:
@@ -805,7 +932,7 @@ class Handler(SimpleHTTPRequestHandler):
             qs = urllib.parse.parse_qs(parsed.query)
             data = (qs.get("data") or qs.get("url") or [SHARE_DEFAULT])[0]
             if not data:
-                data = "https://example.com/deposit-value"
+                data = SHARE_DEFAULT
             if len(data) > 2048:
                 self._forbid(b"QR data too long")
                 return
@@ -836,12 +963,10 @@ class Handler(SimpleHTTPRequestHandler):
         if self.path.startswith("/api/prices"):
             qs = urllib.parse.parse_qs(parsed.query)
             want_refresh = "refresh=1" in self.path or "force=1" in self.path
-            # Public cannot force upstream refresh — requires admin key
+            # Public cannot force upstream refresh — requires admin session / header
             force = False
-            if want_refresh:
-                key = (qs.get("key") or [""])[0]
-                if key == ADMIN_KEY:
-                    force = True
+            if want_refresh and _is_admin_request(self):
+                force = True
                 # else ignore refresh flag and serve cache
             try:
                 payload = get_cached_prices(force=force)
@@ -862,6 +987,77 @@ class Handler(SimpleHTTPRequestHandler):
             return
         return super().do_GET()
 
+
+
+    def _handle_admin_login(self) -> None:
+        """POST /api/admin/login — form or JSON {key}; sets HttpOnly session cookie."""
+        try:
+            length = int(self.headers.get("Content-Length", 0) or 0)
+        except ValueError:
+            length = 0
+        if length < 0 or length > 4096:
+            body = render_admin_login_html("请求过大")
+            self.send_response(413)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        raw = self.rfile.read(length) if length else b""
+        ctype = (self.headers.get("Content-Type") or "").lower()
+        key = ""
+        if "application/json" in ctype:
+            try:
+                payload = json.loads(raw.decode("utf-8") or "{}")
+                key = str(payload.get("key") or payload.get("password") or "")
+            except json.JSONDecodeError:
+                key = ""
+        else:
+            form = urllib.parse.parse_qs(raw.decode("utf-8", errors="replace"))
+            key = (form.get("key") or form.get("password") or [""])[0]
+        key = key.strip()
+        # Constant-time compare
+        if not key or not hmac.compare_digest(key, ADMIN_KEY):
+            # mild delay against brute force
+            time.sleep(0.4 + secrets.randbelow(200) / 1000.0)
+            accept = (self.headers.get("Accept") or "").lower()
+            if "application/json" in accept or "application/json" in ctype:
+                body = json.dumps({"ok": False, "error": "unauthorized"}).encode()
+                self.send_response(401)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Cache-Control", "no-store")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            body = render_admin_login_html("密钥错误，请重试")
+            self.send_response(401)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        token = _session_token()
+        cookie = _set_admin_cookie_header(self, token)
+        accept = (self.headers.get("Accept") or "").lower()
+        if "application/json" in accept or "application/json" in ctype:
+            body = json.dumps({"ok": True, "expires_in": SESSION_TTL_SEC}).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Set-Cookie", cookie)
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        self.send_response(303)
+        self.send_header("Location", "/admin")
+        self.send_header("Set-Cookie", cookie)
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
 
     def do_OPTIONS(self) -> None:  # noqa: N802
         parsed = urllib.parse.urlparse(self.path)
@@ -887,6 +1083,9 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path == "/api/admin/login":
+            self._handle_admin_login()
+            return
         if parsed.path != "/api/event":
             self.send_error(404)
             return
@@ -994,7 +1193,7 @@ class Handler(SimpleHTTPRequestHandler):
 def main() -> None:
     host = __import__("os").environ.get("HOST", "127.0.0.1")
     httpd = ThreadingHTTPServer((host, PORT), Handler)
-    print(f"Serving {ROOT} on http://{host}:{PORT}/  (API: /api/prices /api/event /admin?key=...)")
+    print(f"Serving {ROOT} on http://{host}:{PORT}/  (API: /api/prices /api/event /admin login)")
     httpd.serve_forever()
 
 
