@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=harden1" />
+  <link rel="stylesheet" href="styles.css?v=disclaimer2" />
 </head>
 <body>
   <header class="site-header">
@@ -62,6 +62,7 @@
 
   <footer class="site-footer">
     <p class="disclaimer">本站仅供娱乐参考，不构成投资/消费建议；请勿用于任何违法用途；开源免费，禁止收费售卖。</p>
+    <p class="disclaimer disclaimer-en" lang="en">For entertainment only. Not investment or purchase advice. Do not use for any illegal purpose. Free and open source — no paid resale.</p>
   </footer>
 
   <!-- Share poster for html2canvas -->
@@ -94,7 +95,10 @@
         </div>
         <img id="shareQr" width="112" height="112" alt="二维码" />
       </div>
-      <div class="share-foot">仅供娱乐参考 · 不构成建议 · 请勿违法</div>
+      <div class="share-foot">
+        <div>仅供娱乐参考 · 不构成建议 · 请勿违法 · 开源免费禁止收费</div>
+        <div class="share-foot-en" lang="en">Entertainment only · Not advice · No illegal use · Free OSS, no paid resale</div>
+      </div>
     </div>
   </div>
 
@@ -102,6 +106,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-  <script src="app.js?v=disclaimer1"></script>
+  <script src="app.js?v=disclaimer2"></script>
 </body>
 </html>

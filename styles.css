@@ -434,6 +434,12 @@ main,
   max-width: 56em;
 }
 
+.site-footer .disclaimer-en {
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  opacity: 0.92;
+}
+
 /* Share card (off-screen but renderable) */
 .share-card {
   position: fixed;
@@ -592,6 +598,13 @@ img#shareQr, #shareQr {
   font-size: 11px;
   color: #8a8a8a;
   text-align: center;
+  line-height: 1.45;
+}
+
+.share-foot-en {
+  margin-top: 2px;
+  font-size: 10px;
+  opacity: 0.9;
 }
 
 /* Toast */

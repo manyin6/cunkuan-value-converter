@@ -6,10 +6,15 @@
 
 > 演示站配置与本仓库默认值不同。Fork 后请按下方「配置」改成你自己的域名与密钥。
 
-## 免责声明 / 使用须知
+## 免责声明 / Disclaimer
 
-本项目及演示站**仅供娱乐参考**，不构成任何投资、理财或消费建议。
+本站仅供娱乐参考，不构成投资/消费建议；请勿用于任何违法用途；开源免费，禁止收费售卖。
 
+For entertainment only. Not investment or purchase advice. Do not use for any illegal purpose. Free and open source — no paid resale.
+
+补充说明：
+
+- 本项目及演示站**仅供娱乐参考**，不构成任何投资、理财或消费建议。
 - **请勿**将本站或本项目用于任何违法用途。
 - **作者本人开源且不收费**；请勿将本站包装成收费服务欺骗用户。
 - 本仓库按 [MIT](./LICENSE) 开源。若你基于本项目对外提供收费服务，须自行承担合规与用户告知责任，且**不得谎称官方**。
@@ -93,3 +98,5 @@ python3 server.py
 [MIT](./LICENSE) © 2026 manyin6
 
 演示站由作者免费提供，仅供娱乐；请勿用于违法用途，亦请勿将本站包装成收费产品欺骗用户（详见上方「免责声明」）。
+
+Demo site is free for entertainment only. Do not use illegally or resell as a paid product (see Disclaimer above).

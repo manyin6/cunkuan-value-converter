@@ -420,7 +420,8 @@ function buildTextSummary(amount) {
     ...rows.map((r) => `${r.name}${r.tag ? "(" + r.tag + ")" : ""}：${r.qtyStr} ${r.unit}`),
     "",
     SHARE_URL,
-    "仅供娱乐参考，不构成建议；请勿用于违法用途。",
+    "仅供娱乐参考，不构成建议；请勿用于违法用途；开源免费，禁止收费。",
+    "For entertainment only. Not advice. Do not use illegally. Free OSS — no paid resale.",
   ];
   return lines.join("\n");
 }
