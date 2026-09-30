@@ -318,6 +318,11 @@ main,
   height: 32px;
 }
 
+.card-art[data-art="aapl"] svg {
+  width: 36px;
+  height: 36px;
+}
+
 .card-art img {
   width: 32px;
   height: 32px;
@@ -386,6 +391,10 @@ main,
   .card-art img {
     width: 52px;
     height: 52px;
+  }
+  .card-art[data-art="aapl"] svg {
+    width: 58px;
+    height: 58px;
   }
   .card-name-row {
     justify-content: flex-start;

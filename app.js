@@ -123,7 +123,7 @@ const ART = {
   beef: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M10 34c2-12 12-22 26-20 10 1 18 10 20 20 1 6-2 14-10 16-12 3-24-1-30-8-4-4-6-6-6-8z" fill="#A63D2F"/><ellipse cx="28" cy="34" rx="7" ry="5.5" fill="#F2C4B0"/><ellipse cx="40" cy="30" rx="4.5" ry="3.5" fill="#F2C4B0" opacity=".85"/></svg>`,
 
 
-  aapl: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#f2f2f2"/><path fill="#111" d="M41.2 18.2c-.9 1.1-2.4 1.9-3.8 1.8.1-1.2.6-2.5 1.5-3.4 1-1 2.5-1.7 3.8-1.8-.1 1.3-.6 2.5-1.5 3.4z"/><path fill="#111" d="M44.2 28.5c-1.4-.8-2.3-2.1-2.3-3.7 0-2.2 1.7-3.6 1.8-3.7-1.1-1.6-2.9-1.8-3.5-1.8-1.5-.2-2.9.9-3.7.9-.8 0-2-.9-3.3-.8-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.3 2.5 1.3-.1 1.8-.8 3.4-.8s2 .8 3.4.8c1.4 0 2.3-1.2 3.2-2.4.9-1.4 1.3-2.8 1.3-2.9-.1 0-2.5-1-2.5-3.7 0-2.3 1.9-3.4 2-3.5z"/></svg>`,
+  aapl: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#f2f2f2"/><g fill="#111" transform="translate(32 33.5) scale(1.55) translate(-12 -12)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .76-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 16.72 2.94 11.82 4.7 8.5c.87-1.65 2.43-2.72 4.12-2.76 1.28-.04 2.5.84 3.29.84.79 0 2.26-1.06 3.81-.9.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.31-2.15 3.77.03 2.93 2.52 3.92 2.55 3.93-.03.1-.41 1.41-1.25 4.14z"/><path d="M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42C11.8 5.46 12.36 4.26 13 3.5z"/></g></svg>`,
 
   tsla: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="12" fill="#111"/><text x="32" y="38" text-anchor="middle" fill="#fff" font-size="14" font-family="system-ui,sans-serif" font-weight="700">T</text></svg>`,
 
@@ -252,7 +252,7 @@ function renderCards(amount) {
         : "";
       return `
         <article class="card" data-id="${row.id}">
-          <div class="card-art" aria-hidden="true">${row.img ? `<img src="${row.img}" alt="${row.name}" width="52" height="52" loading="lazy"/>` : (ART[row.art] || "")}</div>
+          <div class="card-art" data-art="${row.art || ''}" aria-hidden="true">${row.img ? `<img src="${row.img}" alt="${row.name}" width="52" height="52" loading="lazy"/>` : (ART[row.art] || "")}</div>
           <div class="card-body">
             <div class="card-name-row">
               <span class="card-name">${row.name}</span>
