@@ -1,0 +1,32 @@
+# Secrets & local env
+.admin_key
+.env
+.env.*
+*.pem
+*.key
+
+# Runtime analytics (never commit live data)
+data/*.json
+!data/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.Python
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# Optional local scratch
+*.tmp
+*.log
+.cache/

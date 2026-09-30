@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="存款价值转换 — 看看这笔存款能换成什么" />
+  <title>存款价值转换</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=harden1" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <svg class="brand-logo" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <rect x="10" y="18" width="44" height="28" rx="4" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M10 28h44" stroke="currentColor" stroke-width="2"/>
+        <circle cx="42" cy="38" r="3.5" fill="currentColor"/>
+      </svg>
+      <div>
+        <h1>存款价值转换</h1>
+        <p class="tagline">看看这笔存款能换成什么</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="btn-text" id="btnRefresh" title="刷新行情">刷新行情</button>
+      <span class="price-pill" id="priceStatus"><span id="statusText">参考价</span></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="input-panel">
+      <label class="input-label" for="amount">存款金额</label>
+      <div class="amount-wrap">
+        <span class="currency-prefix">￥</span>
+        <input id="amount" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="100000" />
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="快捷金额">
+        <button type="button" class="chip" data-amount="10000">1万</button>
+        <button type="button" class="chip active" data-amount="100000">10万</button>
+        <button type="button" class="chip" data-amount="1000000">100万</button>
+        <button type="button" class="chip" data-amount="custom" id="chipCustom">自定义</button>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <h2>可换成</h2>
+      <div class="toolbar-actions">
+        <button type="button" class="btn" id="btnCopy">复制结果</button>
+        <button type="button" class="btn btn-primary" id="btnSave">保存图片</button>
+      </div>
+    </section>
+
+    <section class="results" aria-live="polite">
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <p class="hint" id="resultsHint">BTC / 黄金 / TSLA / AAPL 为实时行情；其余为参考零售价。</p>
+  </main>
+
+  <!-- Share poster for html2canvas -->
+  <div id="share-card" class="share-card" aria-hidden="true">
+    <div class="share-card-inner">
+      <div class="share-head">
+        <svg class="share-logo" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+          <rect x="10" y="18" width="44" height="28" rx="4" stroke="#111" stroke-width="2.5"/>
+          <path d="M10 28h44" stroke="#111" stroke-width="2"/>
+          <circle cx="42" cy="38" r="3.5" fill="#111"/>
+        </svg>
+        <div>
+          <div class="share-title">存款价值转换</div>
+          <div class="share-sub" id="shareAmount">￥100,000</div>
+        </div>
+      </div>
+      <div class="share-slogan" id="shareSlogan"></div>
+      <div class="share-grid" id="shareGrid"></div>
+      <div class="share-promo">
+        <div class="share-promo-brand">
+          <svg class="share-promo-logo" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <rect x="10" y="18" width="44" height="28" rx="4" stroke="#111" stroke-width="2.5"/>
+            <path d="M10 28h44" stroke="#111" stroke-width="2"/>
+            <circle cx="42" cy="38" r="3.5" fill="#111"/>
+          </svg>
+          <div>
+            <div class="share-promo-name">存款价值转换</div>
+            <div class="share-promo-tip" id="shareQrLabel">长按扫码 · 算算你的存款</div>
+          </div>
+        </div>
+        <img id="shareQr" width="112" height="112" alt="二维码" />
+      </div>
+      <div class="share-foot">仅供参考，不构成建议</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="app.js?v=harden1"></script>
+</body>
+</html>
