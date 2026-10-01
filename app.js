@@ -74,6 +74,7 @@ function track(type) {
 
 const SHARE_ITEM_IDS = [
   "btc", "gold", "mantou", "beef", "moutai", "iphone", "macbook", "luckin",
+  "fridge", "washer", "ac",
   "tsla", "aapl", "beijing", "gas", "maybach", "ferrari",
 ];
 
