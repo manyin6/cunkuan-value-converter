@@ -73,7 +73,7 @@ function track(type) {
 }
 
 const SHARE_ITEM_IDS = [
-  "btc", "gold", "mantou", "beef", "moutai", "iphone", "macbook", "luckin",
+  "btc", "gold", "mantou", "beef", "zhujiaofan", "moutai", "iphone", "macbook", "luckin",
   "fridge", "washer", "ac",
   "tsla", "aapl", "beijing", "gas", "maybach", "ferrari",
 ];
@@ -86,6 +86,7 @@ const BASELINE = {
   AAPL_CNY: 2215.47,
   mantou: 1.5,
   beef: 71.59,
+  zhujiaofan: 28,       // 猪脚饭：广东/街边摊常见价约25–35元/份，取28元/份参考
   fridge: 4000,
   washer: 3500,
   ac: 2150,
@@ -122,6 +123,8 @@ const ART = {
   mantou: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="48" rx="22" ry="5" fill="#E8E0D0" opacity=".7"/><path d="M12 38c0-14 9-24 20-24s20 10 20 24c0 4-9 8-20 8s-20-4-20-8z" fill="#F5EDE0"/><path d="M18 34c2-8 7-14 14-14" fill="none" stroke="#FFFBF5" stroke-width="3" stroke-linecap="round" opacity=".8"/><path d="M24 22c3-2 7-3 12-2" fill="none" stroke="#D9CDB8" stroke-width="1.2" stroke-linecap="round"/></svg>`,
 
   beef: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M10 34c2-12 12-22 26-20 10 1 18 10 20 20 1 6-2 14-10 16-12 3-24-1-30-8-4-4-6-6-6-8z" fill="#A63D2F"/><ellipse cx="28" cy="34" rx="7" ry="5.5" fill="#F2C4B0"/><ellipse cx="40" cy="30" rx="4.5" ry="3.5" fill="#F2C4B0" opacity=".85"/></svg>`,
+
+  zhujiaofan: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="51" rx="23" ry="5" fill="#D8C8B2" opacity=".65"/><path d="M10 34h44c-1 12-9 20-22 20s-21-8-22-20z" fill="#F2E6D3" stroke="#B79B7A" stroke-width="1.5"/><path d="M14 34c2-10 9-16 18-16s16 6 18 16z" fill="#FFF9EC"/><path d="M18 31c4-3 8-4 12-2 3 1 5 4 9 2 3-1 5-1 8 1" fill="none" stroke="#E8D8BA" stroke-width="2" stroke-linecap="round"/><path d="M27 25c2-2 5-2 7 0l-2 5h-7zM38 27c3-2 6 0 7 3l-3 4-7-2z" fill="#A63D2F"/><path d="M14 35h36" stroke="#C7A982" stroke-width="1.5"/></svg>`,
 
 
   aapl: `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#f2f2f2"/><g fill="#111" transform="translate(32 33.5) scale(1.55) translate(-12 -12)"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .76-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 16.72 2.94 11.82 4.7 8.5c.87-1.65 2.43-2.72 4.12-2.76 1.28-.04 2.5.84 3.29.84.79 0 2.26-1.06 3.81-.9.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.31-2.15 3.77.03 2.93 2.52 3.92 2.55 3.93-.03.1-.41 1.41-1.25 4.14z"/><path d="M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42C11.8 5.46 12.36 4.26 13 3.5z"/></g></svg>`,
@@ -161,6 +164,7 @@ const ITEMS = [
   { id: "gold", name: "黄金", unit: "克", decimals: 2, art: "gold", getPrice: () => prices.GOLD_CNY, liveKey: "gold", tag: "AU9999" },
   { id: "mantou", name: "馒头", unit: "个", decimals: 0, art: "mantou", getPrice: () => BASELINE.mantou, retail: true },
   { id: "beef", name: "牛肉", unit: "kg", decimals: 2, art: "beef", getPrice: () => BASELINE.beef, retail: true },
+  { id: "zhujiaofan", name: "猪脚饭", unit: "份", decimals: 1, art: "zhujiaofan", getPrice: () => BASELINE.zhujiaofan, retail: true },
   { id: "moutai", name: "飞天茅台", unit: "瓶", decimals: 2, art: "moutai", getPrice: () => BASELINE.moutai, retail: true, tag: "500ml" },
   { id: "iphone", name: "iPhone", unit: "台", decimals: 2, art: "iphone", getPrice: () => BASELINE.iphone, retail: true, tag: "18 Pro Max" },
   { id: "macbook", name: "MacBook Air", unit: "台", decimals: 2, art: "macbook", getPrice: () => BASELINE.macbook, retail: true, tag: "13\" M5" },
