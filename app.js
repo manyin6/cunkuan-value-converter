@@ -192,8 +192,11 @@ function parseAmount(raw) {
 }
 
 function trimNum(n, maxDecimals) {
-  const fixed = n.toFixed(maxDecimals);
-  return fixed.replace(/\.?0+$/, "") || "0";
+  let s = Number(n).toFixed(maxDecimals);
+  if (s.includes(".")) {
+    s = s.replace(/0+$/, "").replace(/\.$/, "");
+  }
+  return s || "0";
 }
 
 function formatQuantity(n, decimals) {
